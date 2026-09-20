@@ -1,0 +1,87 @@
+EXPERIMENT 8: UPDATE AND DELETE OPERATIONS
+
+FILE 1: student.js
+
+const mongoose = require('mongoose');
+
+const studentSchema = new mongoose.Schema({
+
+    name: {
+        type: String,
+        required: true
+    },
+
+    age: {
+        type: Number,
+        min: 18
+    },
+
+    department: String,
+
+    email: {
+        type: String,
+        unique: true
+    }
+});
+
+const Student = mongoose.model(
+    "Student",
+    studentSchema
+);
+
+console.log("Student Model Created");
+
+module.exports = Student;
+
+
+FILE 2: index.js
+
+const mongoose = require('mongoose');
+
+const Student = require('./Student');
+
+const main = async () => {
+
+    try {
+
+        await mongoose.connect(
+            'mongodb://127.0.0.1:27017/studentDB'
+        );
+
+        console.log("MongoDB Connected");
+
+        // Update
+        const updateResult = await Student.updateOne(
+            {
+                name: "Smith"
+            },
+            {
+                age: 22
+            }
+        );
+
+        console.log("Updated:", updateResult);
+
+        // Delete
+        const deleteResult = await Student.deleteOne(
+            {
+                name: "Jones"
+            }
+        );
+
+        console.log("Deleted:", deleteResult);
+
+    }
+    catch (err) {
+
+        console.log("Error:", err);
+
+    }
+    finally {
+
+        await mongoose.disconnect();
+
+    }
+};
+
+main();

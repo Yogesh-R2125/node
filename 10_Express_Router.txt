@@ -1,0 +1,149 @@
+EXPERIMENT 10: EXPRESS ROUTER
+
+FILE 1: app.js
+
+const express = require("express");
+
+const app = express();
+
+// Middleware to read JSON data
+app.use(express.json());
+
+// Import route modules
+const studentRoutes =
+    require("./routes/studentRoutes");
+
+const userRoutes =
+    require("./routes/userRoutes");
+
+// Use modular routes
+app.use("/students", studentRoutes);
+app.use("/users", userRoutes);
+
+// Home route
+app.get("/", (req, res) => {
+    res.send("Express Modular Routing Application");
+});
+
+// Start server
+const PORT = 3000;
+
+app.listen(PORT, () => {
+    console.log(
+        `Server running at http://localhost:${PORT}`
+    );
+});
+
+
+FILE 2: routes/studentRoutes.js
+
+const express = require("express");
+
+const router = express.Router();
+
+// GET all students
+router.get("/", (req, res) => {
+
+    res.json([
+        {
+            id: 1,
+            name: "Smith",
+            department: "IT"
+        },
+        {
+            id: 2,
+            name: "John",
+            department: "CSE"
+        },
+        {
+            id: 3,
+            name: "David",
+            department: "ECE"
+        }
+    ]);
+
+});
+
+// GET student by ID
+router.get("/:id", (req, res) => {
+
+    const id = req.params.id;
+
+    res.send(
+        `Details of student with ID: ${id}`
+    );
+
+});
+
+// POST a new student
+router.post("/", (req, res) => {
+
+    const student = req.body;
+
+    res.json({
+        message: "Student added successfully",
+        student: student
+    });
+
+});
+
+// DELETE student
+router.delete("/:id", (req, res) => {
+
+    const id = req.params.id;
+
+    res.send(
+        `Student with ID ${id} deleted successfully`
+    );
+
+});
+
+module.exports = router;
+
+
+FILE 3: routes/userRoutes.js
+
+const express = require("express");
+
+const router = express.Router();
+
+// GET all users
+router.get("/", (req, res) => {
+
+    res.json([
+        {
+            id: 1,
+            name: "Alice"
+        },
+        {
+            id: 2,
+            name: "Bob"
+        }
+    ]);
+
+});
+
+// GET user by ID
+router.get("/:id", (req, res) => {
+
+    const id = req.params.id;
+
+    res.send(
+        `Details of user with ID: ${id}`
+    );
+
+});
+
+// POST a new user
+router.post("/", (req, res) => {
+
+    const user = req.body;
+
+    res.json({
+        message: "User added successfully",
+        user: user
+    });
+
+});
+
+module.exports = router;

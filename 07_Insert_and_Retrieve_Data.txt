@@ -1,0 +1,76 @@
+EXPERIMENT 7: INSERT AND RETRIEVE DATA
+
+FILE 1: student.js
+
+const mongoose = require('mongoose');
+
+const studentSchema = new mongoose.Schema({
+
+    name: {
+        type: String,
+        required: true
+    },
+
+    age: {
+        type: Number,
+        min: 18
+    },
+
+    department: String,
+
+    email: {
+        type: String,
+        unique: true
+    }
+});
+
+const Student = mongoose.model(
+    "Student",
+    studentSchema
+);
+
+console.log("Student Model Created");
+
+module.exports = Student;
+
+
+FILE 2: index.js
+
+const mongoose = require('mongoose');
+
+const Student = require('./Student');
+
+const main = async () => {
+
+    try {
+
+        await mongoose.connect(
+            'mongodb://127.0.0.1:27017/studentDB'
+        );
+
+        console.log("MongoDB Connected");
+
+        const s = new Student({
+            name: "Smith",
+            age: 21,
+            department: "IT",
+            email: "smith@gmail.com"
+        });
+
+        await s.save();
+
+        console.log("Inserted");
+
+        const data = await Student.find();
+
+        console.log(data);
+
+    }
+    catch (err) {
+
+        console.log("Error:", err);
+
+    }
+};
+
+main();
